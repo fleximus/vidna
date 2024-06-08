@@ -21,10 +21,10 @@ import fleximus.idna
 
 fn main() {
 	input := 'café'
-	conv  := idna.to_ascii(input)
+	conv := idna.to_ascii(input)
 	conv2 := idna.to_unicode(conv)
 
-	println("$input converts to $conv and back again to $conv2"
+	println('${input} converts to ${conv} and back again to ${conv2}')
 }
 ```
 
