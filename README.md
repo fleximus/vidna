@@ -8,16 +8,16 @@ An IDNA string library for converting internationalized domain names written in 
 You can install this package either from [VPM] or from GitHub:
 
 ```txt
-v install fleximus.vidna
+v install fleximus.idna
 v install --git https://github.com/fleximus/vidna
 ```
 
 ## Usage
 
-To use `vidna` in order to convert domain names
+To use `idna` in order to convert international strings
 
 ```v
-import fleximus.vidna
+import fleximus.idna
 
 fn main() {
 	input := 'café'
