@@ -107,7 +107,7 @@ pub fn decode(input_raw string) string {
     mut i := 0
     mut bias := initial_bias
 
-    mut basic := input.index_u8_last('-'[0])
+    mut basic := input.last_index_u8('-'[0])
     if basic == -1 {
         basic = 0
     }
