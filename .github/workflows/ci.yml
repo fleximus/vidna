@@ -11,12 +11,17 @@ jobs:
         with:
           repository: vlang/v
           path: v
+
       - name: Build V
         run: cd v && make && sudo ./v symlink && cd -
+
       - name: Checkout project
         uses: actions/checkout@v2
         with:
           path: idna
+
+      - name: Link module to ~/.vmodules
+        run: mkdir -p ~/.vmodules/fleximus && ln -s $(realpath idna) ~/.vmodules/fleximus/idna
 
       - name: Run tests
         run: cd idna && v -W -N test .
