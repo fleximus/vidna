@@ -79,7 +79,7 @@ fn test_rfc3492() {
 
 	// (S) -> $1.00 <-
 	//assert to_unicode('xn--') == ''
-	//assert decode('\u002D\u003E\u0020\u0024\u0031\u002E\u0030\u0030\u0020\u003C\u002D') == '-> $1.00 <-'
+	assert decode('\u002D\u003E\u0020\u0024\u0031\u002E\u0030\u0030\u0020\u003C\u002D') == '-> $1.00 <-'
 }
 
 fn idna2008() {
@@ -88,18 +88,18 @@ fn idna2008() {
 }
 
 fn test_my_own_stuff() {
-	//assert to_unicode('xn--caf-dma.com') == 'café.com'  // @TODO: Test fails
+	assert to_unicode('xn--caf-dma.com') == 'café.com'
 	assert to_ascii('café.com') == 'xn--caf-dma.com'
 
-	//assert to_unicode('xn--rolx-nu5a.com') == 'rolẹx.com'  // @TODO: Test fails
+	assert to_unicode('xn--rolx-nu5a.com') == 'rolẹx.com'
 	assert to_ascii('rolẹx.com') == 'xn--rolx-nu5a.com'
 
-	//assert to_unicode('xn--lid-xbb.com') == 'lidǀ.com'  // @TODO: Test fails
+	assert to_unicode('xn--lid-xbb.com') == 'lidǀ.com'
 	assert to_ascii('lidǀ.com') == 'xn--lid-xbb.com'
 
-	//assert to_unicode('xn--googe-95a.com') == 'googĺe.com'  // @TODO: Test fails
+	assert to_unicode('xn--googe-95a.com') == 'googĺe.com'
 	assert to_ascii('googĺe.com') == 'xn--googe-95a.com'
 
-	//assert to_unicode('xn--ibeia-lp1b.com') == 'ibeṛia.com'  // @TODO: Test fails
+	assert to_unicode('xn--ibeia-lp1b.com') == 'ibeṛia.com'
 	assert to_ascii('ibeṛia.com') == 'xn--ibeia-lp1b.com'
 }

@@ -101,7 +101,13 @@ pub fn encode(input2 string) string {
 }
 
 pub fn decode(input_raw string) string {
-    mut input := input_raw
+    mut input := input_raw.to_lower()
+    
+    // Check if the input is already in decoded form
+    if !input.starts_with('xn--') && !contains_only_ascii_and_hyphen(input) {
+        return input_raw  // Return the original input if it's not Punycode
+    }
+
     mut output := []rune{}
     mut n := u16(initial_n)
     mut i := 0
@@ -175,6 +181,16 @@ pub fn decode(input_raw string) string {
 }
 
 @[inline]
+fn contains_only_ascii_and_hyphen(s string) bool {
+    for c in s {
+        if (c < 0x21 || c > 0x7E) && c != `-` {
+            return false
+        }
+    }
+    return true
+}
+
+@[inline]
 fn adapt(delta int, num_points int, first_time bool) int {
     mut d := delta
 
@@ -209,15 +225,25 @@ fn digit_to_basic(digit int, flag int) u8 {
 
 // @TODO: works with 'cafè', but not with 'café.com' - splitting not working as desired
 pub fn to_unicode(input string) string {
-    if input.len >= 4 && input[0..4] == "xn--" {
-        return map_domain_decode(input[4..input.len].to_lower())
-    }
-
-    return map_domain_decode(input.to_lower())
+    labels := input.to_lower().split('.')
+    decoded_labels := labels.map(fn (label string) string {
+        if label.len >= 4 && label[0..4] == "xn--" {
+            return decode(label[4..])
+        }
+        return label
+    })
+    return decoded_labels.join('.')
 }
 
 pub fn to_ascii(input string) string {
-    return "xn--" + map_domain(input)
+    labels := input.split('.')
+    encoded_labels := labels.map(fn (label string) string {
+        if non_ascii_check(label) {
+            return "xn--" + encode(label)
+        }
+        return label
+    })
+    return encoded_labels.join('.')
 }
 
 fn ucs2decode(input string) []int {
@@ -232,60 +258,6 @@ fn ucs2decode(input string) []int {
     }
 
     return output
-}
-
-fn map_domain(domain string) string {
-    parts := domain.split('@')
-
-    mut result := ''
-    mut d := domain
-
-    if parts.len > 1 {
-        result = parts[0] + '@'
-        d = parts[1]
-    }
-
-    d = d.replace_each([
-        '\u3002', '\x2E',
-        '\uFF0E', '\x2E',
-        '\uFF61', '\x2E'
-    ])
-
-    labels := d.split('.')
-
-    encode_only_non_ascii := fn (s string) string {
-        if non_ascii_check(s) {
-            return encode(s)
-        }
-
-        return s
-    }
-
-    encoded := labels.map(encode_only_non_ascii(it)).join('.')
-    return result + encoded
-}
-
-fn map_domain_decode(domain string) string {
-    parts := domain.split('@')
-
-    mut result := ''
-    mut d := domain
-
-    if parts.len > 1 {
-        result = parts[0] + '@'
-        d = parts[1]
-    }
-
-    d = d.replace_each([
-        '\u3002', '\x2E',
-        '\uFF0E', '\x2E',
-        '\uFF61', '\x2E'
-    ])
-
-    labels := d.split('.')
-    decoded := labels.map(decode(it)).join('.')
-
-    return result + decoded
 }
 
 fn non_ascii_check(input string) bool {
