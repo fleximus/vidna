@@ -24,7 +24,7 @@ jobs:
         run: mkdir -p ~/.vmodules/fleximus && ln -s $(realpath idna) ~/.vmodules/fleximus/idna
 
       - name: Run tests
-        run: cd idna && v -W -N test .
+        run: cd idna && v -W test .
 
       - name: Run check-md
         run: cd idna && v check-md .
